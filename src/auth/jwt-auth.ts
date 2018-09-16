@@ -83,7 +83,6 @@ class JwtAuth {
             mobileNumber: user.mobileNumber,
             email: user.email,
             logoutNum: user.logoutNum,
-            securityLevel: user.securityLevel,
             isRefresh: isRefresh
         };
 
