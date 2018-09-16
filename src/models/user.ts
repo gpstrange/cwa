@@ -7,7 +7,10 @@ export type UserModel = {
     email: string,
     password: string,
     logoutNum: number,
-    securityLevel: number
+    numberOfCars: number,
+    createdAt: Date,
+    carIds: string[], 
+    address: string
 };
 
 const userSchema = new mongoose.Schema({
@@ -15,8 +18,14 @@ const userSchema = new mongoose.Schema({
     mobileNumber: {type: String, unique: true},
     email: {type: String, unique: true},
     password: {type: String},
-    logoutNum: {type: Number},
-    securityLevel: {type: Number}
+    logoutNum: Number,
+    numberOfCars: Number,
+    createdAt: Date,
+    carIds: [{
+        type: mongoose.SchemaTypes.ObjectId,
+        ref: 'cars'
+    }],
+    address: String
   }, { timestamps: true });
 
 const User = mongoose.model('User', userSchema);
