@@ -7,7 +7,8 @@ const config: any = {
     SERVER_LOG_DIR: process.env.SERVER_LOG_FILE || '../log',
     JWT_SECRET: process.env.JWT_SECRET || 'no s3cr3t',
     JWT_PL_SECRET:  process.env.JWT_PL_SECRET || 'my awe = some s3cret',
-    JWT_SALT: process.env.JWT_SALT || 'p3pp3r'
+    JWT_SALT: process.env.JWT_SALT || 'p3pp3r',
+    VERSION: process.env.VERSION || 'v1'
 };
 
 export default config;
