@@ -20,8 +20,8 @@ const routes = (app: Express) => {
     );
 
     app.use(authRouteFilter, jwtMiddleware);
-    app.use('/api/v1/client', userRoutes);
-    app.use('/api/v1/vendor', userRoutes);
+    app.use(`/api/${config.VERSION}/client`, userRoutes);
+    app.use(`/api/${config.VERSION}/vendor`, userRoutes);
     logger.debug('App routes setup.');
 };
 
