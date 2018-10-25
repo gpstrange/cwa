@@ -13,6 +13,7 @@ export type locationType = {
 
 export interface VendorInterface extends mongoose.Document {
     _id: string;
+    id: string;
     name: string;
     mobileNumber1: number;
     mobileNumber2: number;
@@ -34,6 +35,7 @@ export interface VendorInterface extends mongoose.Document {
 }
 
 const vendorSchema = new mongoose.Schema({
+    id: String,
     name: {type: String, required: true},
     mobileNumber1: {type: Number, unique: true},
     mobileNumber2: {type: Number},

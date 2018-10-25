@@ -11,6 +11,7 @@ import bcrypt from 'bcrypt';
 import { getVendorsDb } from '../model-func/vendor';
 import Vendor, { VendorInterface } from '../models/vendor';
 import { counter } from '../model-func/system';
+import { CounterSchema } from '../models/counter';
 const logger = log4js.getLogger('VENDOR-CTRL');
 
 export const addVendor = (req: Request, res: Response, next: NextFunction) => {
@@ -64,14 +65,18 @@ export const addVendor = (req: Request, res: Response, next: NextFunction) => {
     bcrypt.hash(newVendor.password, 10).then((pwdString) => {
         newVendor.password = pwdString;
         const vendor = new Vendor(newVendor);
-        counter(newVendor.city, () => {
-
-        });
-        vendor.save((err, createdUser) => {
+        counter(newVendor.city, (err: Error, count: CounterSchema) => {
             if (err) {
                 return next(err);
             }
-            return res.json(createdUser);
+            vendor.id = count.categoryName + '-' + count.value;
+            logger.debug('FUNC- add Vendor, counter, New vendor created' + vendor.id);
+            vendor.save((err, createdUser) => {
+                if (err) {
+                    return next(err);
+                }
+                return res.json(createdUser);
+            });
         });
     });
 };
