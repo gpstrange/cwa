@@ -6,7 +6,8 @@
   "scripts": {
     "tslint": "tslint -c tslint.json -p tsconfig.json",
     "build": "npm run tslint && tsc",
-    "start": "npm run build && node build/index.js"
+    "start": "node build/index.js",
+    "postinstall": "npm run build"
   },
   "author": "Guru2402",
   "license": "ISC",
