@@ -22,6 +22,7 @@ const routes = (app: Express) => {
     app.use(authRouteFilter, jwtMiddleware);
     app.use(`/api/${config.VERSION}/client`, userRoutes);
     app.use(`/api/${config.VERSION}/vendor`, userRoutes);
+    app.use(`/api/${config.VERSION}/vendor`, );
     logger.debug('App routes setup.');
 };
 

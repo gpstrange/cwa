@@ -68,7 +68,6 @@ const vendorSchema = new mongoose.Schema({
       }
       return next();
     });
-  
 
 const Vendor = mongoose.model('vendor', vendorSchema);
 export default Vendor;

@@ -9,7 +9,7 @@ export type UserModel = {
     logoutNum: number,
     numberOfCars: number,
     createdAt: Date,
-    carIds: string[], 
+    carIds: string[],
     address: string
 };
 

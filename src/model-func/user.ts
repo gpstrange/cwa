@@ -28,3 +28,5 @@ export const getUsersDb = (query: any, cb: any) => {
         return cb(undefined, data);
     });
 };
+
+// export const addUser = ()

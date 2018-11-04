@@ -10,7 +10,9 @@ import log4js from '../util/log4js';
 const logger = log4js.getLogger('USER-CTRL');
 import bcrypt from 'bcrypt';
 import * as User from '../model-func/user';
-import { UserModel } from '../models/user';
+import UserSchema, { UserModel } from '../models/user';
+import { counter } from '../model-func/system';
+import { CounterSchema } from '../models/counter';
 
 const secrets = {
     JWT_SECRET: config.JWT_SECRET,
@@ -74,4 +76,52 @@ export let refreshToken = (req: Request, res: Response, next: NextFunction) => {
     }
     const token = authMgr.generateToken(req.user, false);
     return res.json({token});
+};
+
+export const signUp = (req: Request, res: Response, next: NextFunction) => {
+    logger.debug('FUNC - signup by user =', req.body.mobileNumber);
+    if (!req.body) {
+        logger.debug('FUNC - signUp, Err- MISSING DATAS by user =', req.body.mobileNumber);
+        const errObj: ErrorObj = {
+            message: 'MISSING DATAS - Please fill all required details',
+            code: 1002,
+            status: httpCodes.UNAUTHORIZED
+        };
+        const error = new CWAError(errObj);
+        return next(error);
+    }
+    if (!req.body.mobileNumber || !req.body.email || !req.body.password || !req.body.name) {
+            const errObj: ErrorObj = {
+                message: 'MISSING Credentials',
+                code: 1006,
+                status: httpCodes.FORBIDDEN
+            };
+            const error = new CWAError(errObj);
+            logger.error(error.message);
+            return next(error);
+    }
+    if (!isNaN(req.body.mobileNumber)) {
+        req.body.mobileNumber1 = parseInt(req.body.mobileNumber1);
+    } else {
+        const errObj: ErrorObj = {
+            message: 'INVALID- Mobile Number 1',
+            code: 1001,
+            status: httpCodes.FORBIDDEN
+        };
+        const error = new CWAError(errObj);
+        logger.error(error.message);
+        return next(error);
+    }
+    req.body.logoutNum = 0;
+    const newUser = <UserModel>(req.body);
+    bcrypt.hash(newUser.password, 10).then((pwdString) => {
+        newUser.password = pwdString;
+        const user = new UserSchema(newUser);
+        user.save((err, createdUser) => {
+            if (err) {
+                return next(err);
+            }
+            return res.json(createdUser);
+        });
+    });
 };

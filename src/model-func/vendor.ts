@@ -1,4 +1,4 @@
-import Vendor, {VendorInterface} from '../models/vendor';
+import Vendor, { VendorInterface } from '../models/vendor';
 import log4js from '../util/log4js';
 const logger = log4js.getLogger('USER-MODEL-FUNC');
 
