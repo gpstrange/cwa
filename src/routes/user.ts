@@ -8,7 +8,7 @@ import { verifyAcl } from '../middlewares/acl'; // ACL Checking middleware
 const router = Router();
 
 router.route('/login').post(userCtl.login);
-router.route('/signup').post(userCtl.login);
+router.route('/signup').post(userCtl.signUp);
 router.route('/users').get(userCtl.getUsers);
 router.route('/users/refreshToken').get(userCtl.refreshToken);
 

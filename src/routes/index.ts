@@ -12,6 +12,7 @@ import jwtAuthMiddleware from '../auth/jwt-middleware';
 const jwtMiddleware = jwtAuthMiddleware(secrets);
 
 import userRoutes from '../routes/user';
+import vendorRoutes from '../routes/vendor';
 
 const routes = (app: Express) => {
     const authRouteFilter = new RegExp('' +
@@ -19,10 +20,10 @@ const routes = (app: Express) => {
         /^(?!^\/api\/v\d+\/reset-password(\/)?$)/.source
     );
 
-    app.use(authRouteFilter, jwtMiddleware);
-    app.use(`/api/${config.VERSION}/client`, userRoutes);
+    // app.use(authRouteFilter, () => {});
+    app.use(`/api/${config.VERSION}/user`, userRoutes);
     app.use(`/api/${config.VERSION}/vendor`, userRoutes);
-    app.use(`/api/${config.VERSION}/vendor`, );
+    app.use(`/api/${config.VERSION}/vendor`, vendorRoutes);
     logger.debug('App routes setup.');
 };
 
