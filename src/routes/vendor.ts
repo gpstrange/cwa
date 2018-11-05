@@ -8,8 +8,7 @@ import { verifyAcl } from '../middlewares/acl'; // ACL Checking middleware
 const router = Router();
 
 router.route('/addVendor').post(vendorCtl.addVendor);
-// router.route('/').post(userCtl.login);
-// router.route('/users').get(userCtl.getUsers);
-// router.route('/users/refreshToken').get(userCtl.refreshToken);
+router.route('/getVendors').post(vendorCtl.getVendors);
+router.route('/editVendor').post(vendorCtl.editVendor);
 
 export default router;

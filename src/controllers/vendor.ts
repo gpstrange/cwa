@@ -8,7 +8,7 @@ import CWAError, { ErrorObj } from '../error/cwa-error';
 import httpCodes from '../error/http-codes';
 import log4js from '../util/log4js';
 import bcrypt from 'bcrypt';
-import { getVendorsDb } from '../model-func/vendor';
+import { getVendorsDb, updateVendorDb } from '../model-func/vendor';
 import Vendor, { VendorInterface } from '../models/vendor';
 import { counter } from '../model-func/system';
 import { CounterSchema } from '../models/counter';
@@ -82,11 +82,33 @@ export const addVendor = (req: Request, res: Response, next: NextFunction) => {
 };
 
 export const getVendors = (req: Request, res: Response, next: NextFunction) => {
+    logger.debug('Function- get Vendors, by =', req.user.username);
     const filter = <any>{};
     if (req.body.filter && req.body.value) {
         filter.query = { [req.body.filter]: req.body.value };
     }
     getVendorsDb(filter, (err: Error, data: VendorInterface[]) => {
+        if (err) {
+            return next(err);
+        }
+        return res.json(data);
+    });
+};
+
+export const editVendor = (req: Request, res: Response, next: NextFunction) => {
+    logger.debug('Function- Update Vendor, by =', req.user.username);
+    if (!req.body._id) {
+        logger.error('MISSING FIELDS - UserId not present in payload, by =', req.user.username);
+        const errorObj: ErrorObj = {
+            message: 'MISSING_FIELDS - UserId not present in payload',
+            code: 1006,
+            status: httpCodes.FORBIDDEN
+        };
+        const error = new CWAError(errorObj);
+        return next(error);
+    }
+    const vendorObj = <VendorInterface>(req.body);
+    updateVendorDb(req.body._id, vendorObj, (err: Error, data: VendorInterface) => {
         if (err) {
             return next(err);
         }
