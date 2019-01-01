@@ -14,6 +14,7 @@ import UserSchema, { UserModel } from '../models/user';
 import { counter } from '../model-func/system';
 import { CounterSchema } from '../models/counter';
 import * as Booking from '../model-func/booking';
+import Car from '../models/car';
 
 const secrets = {
     JWT_SECRET: config.JWT_SECRET,
@@ -130,7 +131,7 @@ export const signUp = (req: Request, res: Response, next: NextFunction) => {
 
 export const bookService = (req: Request, res: Response, next: NextFunction) => {
     logger.debug('FUNC - book-service by user =', req.body.mobileNumber);
-    if (!req.body || !req.body.vendorId || !req.body.date || !req.body.carModel || !req.body.serviceType) {
+    if (!req.body || !req.body.vendorId || !req.body.carId || !req.body.serviceType || !req.body.serviceId || !req.body.amount) {
         logger.debug('FUNC - book-service, Err- MISSING DATAS by user =', req.body.mobileNumber);
         const errObj: ErrorObj = {
             message: 'MISSING DATAS - Please fill all required details',
@@ -140,10 +141,38 @@ export const bookService = (req: Request, res: Response, next: NextFunction) => 
         const error = new CWAError(errObj);
         return next(error);
     }
+    req.body.userId = req.user._id;
+    req.body.createdDate = new Date();
     Booking.newBooking(req.body, (err: Error, data: any) => {
         if (err) {
             return next(err);
         }
         return res.json(data);
+    });
+};
+
+export const addCar =  (req: Request, res: Response, next: NextFunction) => {
+    logger.debug('FUNC - add-car by user =', req.body.mobileNumber);
+    if (!req.body || !req.body.modelName || !req.body.registrationNumber ) {
+        logger.debug('FUNC - add-car, Err- MISSING DATAS by user =', req.body.mobileNumber);
+        const errObj: ErrorObj = {
+            message: 'MISSING DATAS - Please fill all required details',
+            code: 1002,
+            status: httpCodes.UNAUTHORIZED
+        };
+        const error = new CWAError(errObj);
+        return next(error);
+    }
+    const carObj = {
+        userId: req.user._id,
+        modelName: req.body.modelName,
+        registrationNumber: req.body.registrationNumber
+    };
+    const newCar = new Car(carObj);
+    newCar.save((err, data) => {
+        if (err) {
+            return next(err);
+        }
+        return res.json({status: 'ok', message: 'Car added successfully'});
     });
 };
