@@ -3,7 +3,6 @@
  */
 import Router from 'express';
 import * as vendorCtl from '../controllers/vendor';
-import { verifyAcl } from '../middlewares/acl'; // ACL Checking middleware
 
 const router = Router();
 
