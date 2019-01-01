@@ -115,3 +115,28 @@ export const editVendor = (req: Request, res: Response, next: NextFunction) => {
         return res.json(data);
     });
 };
+
+export const getNearbyVendors =  (req: Request, res: Response, next: NextFunction) => {
+    logger.debug('Function- get nearby Vendor, by =', req.user.username);
+    if (!req.body.coordinates || !req.body.coordinates.length) {
+        logger.error('MISSING FIELDS - Coordinates not present in payload, by =', req.user.username);
+        const errorObj: ErrorObj = {
+            message: 'MISSING_FIELDS - Coordinates not present in payload',
+            code: 1006,
+            status: httpCodes.FORBIDDEN
+        };
+        const error = new CWAError(errorObj);
+        return next(error);
+    }
+    const filter = <any>{};
+    const maxDistance = parseInt(req.body.maxDistance) || 10;
+    filter.query = { location: { $centerSphere :
+                    [ req.body.coordinates , maxDistance / 3963.2 ]
+                    }};
+    getVendorsDb(filter, (err: Error, data: VendorInterface[]) => {
+        if (err) {
+            return next(err);
+        }
+        return res.json(data);
+    });
+};

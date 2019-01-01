@@ -10,5 +10,6 @@ const router = Router();
 router.route('/addVendor').post(vendorCtl.addVendor);
 router.route('/getVendors').post(vendorCtl.getVendors);
 router.route('/editVendor').post(vendorCtl.editVendor);
+router.route('/getNearbyVendor').post(vendorCtl.getNearbyVendors);
 
 export default router;
