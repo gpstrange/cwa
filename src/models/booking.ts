@@ -18,7 +18,7 @@ const bookingSchema = new mongoose.Schema({
         type: mongoose.SchemaTypes.ObjectId,
         ref: 'transactions'
     },
-    serviceCost: Number,
+    amount: Number,
     carId: {
         type: mongoose.SchemaTypes.ObjectId,
         ref: 'cars'
