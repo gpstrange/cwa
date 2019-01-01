@@ -13,6 +13,7 @@ import * as User from '../model-func/user';
 import UserSchema, { UserModel } from '../models/user';
 import { counter } from '../model-func/system';
 import { CounterSchema } from '../models/counter';
+import * as Booking from '../model-func/booking';
 
 const secrets = {
     JWT_SECRET: config.JWT_SECRET,
@@ -62,21 +63,21 @@ export let login = (req: Request, res: Response, next: NextFunction) => {
     });
 };
 
-export let refreshToken = (req: Request, res: Response, next: NextFunction) => {
-    logger.debug('FUNC - refreshToken by user =', req.body.mobileNumber);
-    const authMgr = new jwtAuth(secrets);
-    if (!req.user.isRefresh) {
-        const errObj: ErrorObj = {
-            message: 'UNAUTHORIZED',
-            code: 1002,
-            status: httpCodes.UNAUTHORIZED
-        };
-        const error = new CWAError(errObj);
-        return next(error);
-    }
-    const token = authMgr.generateToken(req.user, false);
-    return res.json({token});
-};
+// export let refreshToken = (req: Request, res: Response, next: NextFunction) => {
+//     logger.debug('FUNC - refreshToken by user =', req.body.mobileNumber);
+//     const authMgr = new jwtAuth(secrets);
+//     if (!req.user.isRefresh) {
+//         const errObj: ErrorObj = {
+//             message: 'UNAUTHORIZED',
+//             code: 1002,
+//             status: httpCodes.UNAUTHORIZED
+//         };
+//         const error = new CWAError(errObj);
+//         return next(error);
+//     }
+//     const token = authMgr.generateToken(req.user, false);
+//     return res.json({token});
+// };
 
 export const signUp = (req: Request, res: Response, next: NextFunction) => {
     logger.debug('FUNC - signup by user =', req.body.mobileNumber);
@@ -123,5 +124,26 @@ export const signUp = (req: Request, res: Response, next: NextFunction) => {
             }
             return res.json(createdUser);
         });
+    });
+};
+
+
+export const bookService = (req: Request, res: Response, next: NextFunction) => {
+    logger.debug('FUNC - book-service by user =', req.body.mobileNumber);
+    if (!req.body || !req.body.vendorId || !req.body.date || !req.body.carModel || !req.body.serviceType) {
+        logger.debug('FUNC - book-service, Err- MISSING DATAS by user =', req.body.mobileNumber);
+        const errObj: ErrorObj = {
+            message: 'MISSING DATAS - Please fill all required details',
+            code: 1002,
+            status: httpCodes.UNAUTHORIZED
+        };
+        const error = new CWAError(errObj);
+        return next(error);
+    }
+    Booking.newBooking(req.body, (err: Error, data: any) => {
+        if (err) {
+            return next(err);
+        }
+        return res.json(data);
     });
 };
